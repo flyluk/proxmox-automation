@@ -8,6 +8,7 @@ Collection of bash scripts for automating Proxmox VE operations including VM cre
 - `setup-proxmox.sh` - Complete Proxmox setup with NVIDIA vGPU support (includes SSH key setup, repository configuration, driver installation, and PCI mapping)
 - `copy_ssh_keys.sh` - Copies SSH keys to target system with password authentication
 - `download-files.sh` - Downloads required Ubuntu cloud image and NVIDIA driver
+- `setup-rag-pipeline.sh` - Clones RAG pipeline repository, creates external Docker volumes, and starts services
 
 ### VM Management Scripts
 - `create-template.sh` - Creates Ubuntu 24.04 cloud-init template with MicroK8s
