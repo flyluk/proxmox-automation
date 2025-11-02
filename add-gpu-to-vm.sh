@@ -45,6 +45,24 @@ echo "Verifying GPU in VM..."
 # Verify GPU with lspci using qemu-guest-agent
 if qm guest exec $VMID -- lspci 2>/dev/null | grep -i nvidia; then
     echo "GPU successfully detected in VM"
+    
+    # Install NVIDIA driver in VM
+    echo "Installing NVIDIA driver in VM..."
+    qm guest exec $VMID -- bash -c "apt update && apt install -y ubuntu-drivers-common && ubuntu-drivers install"
+    
+    echo "NVIDIA driver installation completed"
+    echo "Rebooting VM to load driver..."
+    qm reboot $VMID
+    
+    sleep 30
+    
+    # Verify driver installation
+    echo "Verifying NVIDIA driver..."
+    if qm guest exec $VMID -- nvidia-smi 2>/dev/null; then
+        echo "NVIDIA driver installed and working successfully"
+    else
+        echo "WARNING: nvidia-smi not available. Driver may need manual verification."
+    fi
 else
     echo "WARNING: GPU not detected in VM. Make sure qemu-guest-agent is installed."
 fi
