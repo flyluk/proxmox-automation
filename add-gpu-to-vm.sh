@@ -75,6 +75,10 @@ if qm guest exec $VMID --timeout 60 -- lspci 2>/dev/null | grep -i nvidia; then
         echo "Installing Docker..."
         qm guest exec $VMID --timeout 600 -- bash -c "apt install -y ca-certificates curl && install -m 0755 -d /etc/apt/keyrings && curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && chmod a+r /etc/apt/keyrings/docker.asc && echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable' > /etc/apt/sources.list.d/docker.list && apt update && apt install -y docker-ce docker-ce-cli containerd.io"
         
+        # Add current user to docker group
+        echo "Adding user to docker group..."
+        qm guest exec $VMID --timeout 60 -- bash -c "usermod -aG docker \$(logname 2>/dev/null || echo \$SUDO_USER || whoami)"
+        
         # Install NVIDIA Container Toolkit
         echo "Installing NVIDIA Container Toolkit..."
         qm guest exec $VMID --timeout 600 -- bash -c "curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' > /etc/apt/sources.list.d/nvidia-container-toolkit.list && apt update && apt install -y nvidia-container-toolkit && nvidia-ctk runtime configure --runtime=docker && systemctl restart docker"
