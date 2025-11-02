@@ -1,0 +1,36 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: iscsi-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iscsi-pv-example
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: iscsi-storage
+  iscsi:
+    targetPortal: YOUR_ISCSI_TARGET_IP:3260
+    iqn: iqn.2024-01.local.storage:target1
+    lun: 0
+    fsType: ext4
+    readOnly: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iscsi-pvc-example
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: iscsi-storage
+  resources:
+    requests:
+      storage: 10Gi
