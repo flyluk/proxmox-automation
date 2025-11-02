@@ -56,7 +56,7 @@ echo "Waiting for MicroK8s to be ready on all nodes..."
 for VMID in "${!VMS[@]}"; do
   IP="${IPs[$VMID]}"
   echo "Waiting for MicroK8s on ${IP}..."
-  ssh -o StrictHostKeyChecking=no "${SSH_USER}@${IP}" "sudo microk8s status --wait-ready"
+  ssh -o StrictHostKeyChecking=no "${SSH_USER}@${IP}" "sudo snap remove microk8s && sudo snap install microk8s --classic && sudo microk8s status --wait-ready"
 done
 
 # Join workers to master
