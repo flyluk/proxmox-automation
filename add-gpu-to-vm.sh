@@ -59,8 +59,17 @@ if qm guest exec $VMID --timeout 60 -- lspci 2>/dev/null | grep -i nvidia; then
     
     # Verify driver installation
     echo "Verifying NVIDIA driver..."
-    if qm guest exec $VMID --timeout 60 -- nvidia-smi 2>/dev/null; then
-        echo "NVIDIA driver installed and working successfully"
+    if qm guest exec $VMID --timeout 60 -- bash -c "lsmod | grep -i nvidia" 2>/dev/null; then
+        echo "NVIDIA driver loaded successfully"
+        
+        # Install nvidia-utils for nvidia-smi
+        echo "Installing nvidia-utils..."
+        qm guest exec $VMID --timeout 300 -- bash -c "apt install -y nvidia-utils-*"
+        
+        # Verify nvidia-smi
+        if qm guest exec $VMID --timeout 60 -- nvidia-smi 2>/dev/null; then
+            echo "nvidia-smi working successfully"
+        fi
         
         # Install Docker
         echo "Installing Docker..."

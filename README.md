@@ -15,7 +15,7 @@ Collection of bash scripts for automating Proxmox VE operations including VM cre
 - `create-microk8s-vms.sh` - Creates multiple MicroK8s VMs
 - `delete-single-vm.sh` - Deletes single VM
 - `remove-microk8s-vms.sh` - Removes multiple VMs
-- `add-gpu-to-vm.sh` - Adds NVIDIA GPU support to existing VM
+- `add-gpu-to-vm.sh` - Adds NVIDIA GPU support to existing VM with Docker and NVIDIA Container Toolkit
 
 ## Quick Start
 
@@ -36,9 +36,22 @@ This script will:
 ./add-gpu-to-vm.sh <vmid>
 ```
 This script will:
+- Stop VM if running
 - Change VM machine type to q35
-- Add GPU with PCI mapping
+- Add GPU with PCI mapping (rombar disabled)
 - Start VM and verify GPU presence
+- Install NVIDIA drivers in VM
+- Install Docker and NVIDIA Container Toolkit
+- Test GPU in Docker container
+
+## Requirements
+
+- Proxmox VE 8.x (tested on Trixie)
+- NVIDIA GPU with vGPU support
+- Ubuntu 24.04 (Noble) for VMs
+- SSH access to Proxmox host
+- `sshpass` (automatically installed by scripts)
+- `qemu-guest-agent` in VMs (included in cloud-init template)
 
 ## Usage
 
@@ -48,3 +61,12 @@ chmod +x *.sh
 ```
 
 Run scripts with appropriate parameters as documented in each file.
+
+## Features
+
+- **Automated Setup**: Complete Proxmox NVIDIA vGPU configuration in one command
+- **Two-Phase Installation**: Handles reboots automatically with polling
+- **PCI Mapping**: Automatic GPU detection and PCI device mapping
+- **VM GPU Support**: Full GPU passthrough with driver and Docker installation
+- **Error Handling**: Comprehensive validation and retry logic
+- **Idempotent**: Safe to run multiple times, skips already completed steps
