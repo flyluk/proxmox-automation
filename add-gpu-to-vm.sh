@@ -36,22 +36,15 @@ echo "Machine type changed to q35"
 echo "Starting VM $VMID..."
 qm start $VMID
 
-# Wait for VM to boot
+# Wait for VM to boot and qemu-guest-agent to start
 echo "Waiting for VM to boot..."
 sleep 30
 
-# Get VM IP address
-VM_IP=$(qm guest cmd $VMID network-get-interfaces 2>/dev/null | grep -oP '(?<="ip-address":")[^"]*' | grep -v '^127\.' | grep -v '^::' | head -1)
-
-if [ -z "$VM_IP" ]; then
-    echo "WARNING: Could not get VM IP address. Please verify GPU manually with: ssh <vm-ip> lspci | grep -i nvidia"
-    exit 0
-fi
-
-echo "VM IP: $VM_IP"
 echo "Verifying GPU in VM..."
 
-# Verify GPU with lspci
-ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@$VM_IP "lspci | grep -i nvidia" && \
-echo "GPU successfully detected in VM" || \
-echo "WARNING: GPU not detected in VM"
+# Verify GPU with lspci using qemu-guest-agent
+if qm guest exec $VMID -- lspci 2>/dev/null | grep -i nvidia; then
+    echo "GPU successfully detected in VM"
+else
+    echo "WARNING: GPU not detected in VM. Make sure qemu-guest-agent is installed."
+fi
