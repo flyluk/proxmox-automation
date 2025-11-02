@@ -1,0 +1,10 @@
+#cloud-config
+runcmd:
+  - apt update
+  - apt install -y qemu-guest-agent snapd
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  - snap install microk8s --classic
+  - usermod -a -G microk8s flyluk
+  - mkdir -p /home/flyluk/.kube
+  - chown -R flyluk:flyluk /home/flyluk/.kube
