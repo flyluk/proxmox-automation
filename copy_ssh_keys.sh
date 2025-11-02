@@ -11,6 +11,19 @@ HOST=$1
 USER=$2
 PASS=$3
 
+# Install sshpass if not available
+if ! command -v sshpass &> /dev/null; then
+    echo "Installing sshpass..."
+    if command -v apt &> /dev/null; then
+        sudo apt update && sudo apt install -y sshpass
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y sshpass
+    else
+        echo "Cannot install sshpass. Please install manually."
+        exit 1
+    fi
+fi
+
 # Remove known_hosts entry for the target host
 ssh-keygen -R "$HOST" 2>/dev/null
 

@@ -10,6 +10,7 @@ Collection of bash scripts for automating Proxmox VE operations including VM cre
 - `delete-single-vm.sh` - Deletes single VM
 - `remove-microk8s-vms.sh` - Removes multiple VMs
 - `copy_ssh_keys.sh` - Copies SSH keys to target system with retry logic
+- `download-files.sh` - Downloads required Ubuntu cloud image and NVIDIA driver
 
 ## Usage
 
