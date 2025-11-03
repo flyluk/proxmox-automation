@@ -1,0 +1,15 @@
+prometheus:
+  prometheusSpec:
+    remoteWrite: []
+
+grafana:
+  sidecar:
+    dashboards:
+      enabled: true
+      SCProvider: true
+      env:
+        SKIP_TLS_VERIFY: "true"
+    datasources:
+      enabled: true
+      env:
+        SKIP_TLS_VERIFY: "true"
